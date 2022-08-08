@@ -38,7 +38,7 @@ def face_recognition(frm):
         if not buffering_flag:
             print('count_face_encodings:', len(face_encodings))
         for face_encoding in face_encodings:
-            # See if the face is a match for the known face(s
+            # See if the face is a match for the known faces
             matches = fr.compare_faces(known_face_encodings, face_encoding)
 
             name = "Unknown"
