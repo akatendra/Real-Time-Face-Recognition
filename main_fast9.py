@@ -12,12 +12,14 @@ def face_recognition(frm):
     global face_locations
     global face_names
     if resize != 1:
+        stored_frame = frm
         frame = cv.resize(frm, (0, 0), fx=1 / resize,
                           fy=1 / resize)
         # Convert the image from BGR color (which OpenCV uses) to RGB color
         # (which face_recognition uses)
         frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
     else:
+        stored_frame = frm
         frame = frm
 
     if not buffering_flag:
@@ -67,18 +69,18 @@ def face_recognition(frm):
             d_left = int((name_plate_width - frame_width) / 2)
         else:
             d_left = 1
-        frame = cv.rectangle(frame, (left, top), (right, bottom),
+        stored_frame = cv.rectangle(stored_frame, (left, top), (right, bottom),
                              (255, 0, 255),
                              2)
 
         # Draw a label with a name below the face
-        cv.rectangle(frame, (left - d_left, bottom),
+        cv.rectangle(stored_frame, (left - d_left, bottom),
                      (right + d_left, bottom + 35),
                      (255, 0, 255), cv.FILLED)
-        cv.putText(frame, name, (left - d_left + 5, bottom + 20),
+        cv.putText(stored_frame, name, (left - d_left + 5, bottom + 20),
                    cv.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255), 1)
 
-    return frame
+    return stored_frame
 
 
 ##################### PATHES #####################
@@ -94,7 +96,7 @@ known_face_encodings = np.load(
 print('Recognition data received', time() - start_time, 'sec')
 
 ########## Settings ##########
-resize = 1  # Must be integer more than "0". Shows how many times the image should be reduced
+resize = 2  # Must be integer more than "0". Shows how many times the image should be reduced
 frame_rate = 100  # Which screenshot will be processed by facial recognition
 frame_count = 1
 buffer_size = 1000000  # How many screenshots will be written to the buffer before it starts displaying
