@@ -127,12 +127,12 @@ while True:
         cv.destroyAllWindows()
         print('Video stream canceled!')
         break
-    # get an updated image of the game
+    # Get an updated screenshot
     screenshot = video_getter.screenshot
 
     screenshot = face_recognition(screenshot)
 
-    # Put screenshots into Que
+    # Put screenshots into Queue
     stack.screenshot = screenshot
     stack_size = stack.size()
     print('stack_size:', stack_size)
