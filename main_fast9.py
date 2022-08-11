@@ -112,7 +112,7 @@ face_names = []
 ##################### Initialize #####################
 
 # initialize the Video Stream
-video_getter = VideoGet('Видеоконференция в ZOOM.mp4').start()
+video_getter = VideoGet('Video conference at ZOOM.mp4').start()
 video_shower = VideoShow(video_getter.screenshot)
 cps = CountsPerSec().start()
 stack = VideoQueue(video_getter.screenshot).start_add()
@@ -181,9 +181,9 @@ while True:
         cv.destroyAllWindows()
         break
 
-    print(f'Запущено потоков: {threading.active_count()}')
+    print(f'There are : {threading.active_count()} threads')
     for thread in threading.enumerate():
-        print(f'Имя потока: {thread.getName()}')
-    print(f'Сейчас активен поток: {threading.current_thread()}')
+        print(f'Thread name: {thread.getName()}')
+    print(f'Now active thread: {threading.current_thread()}')
 
 print('Done.')
