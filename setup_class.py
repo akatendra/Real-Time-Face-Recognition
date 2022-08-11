@@ -92,7 +92,5 @@ def setup_class(path):
 
 
 if __name__ == '__main__':
-    setup_class('class_beetroot')
-    # setup_class('class_got')
-    # setup_class('class_trofim')
+    setup_class('class_trofim')
 
