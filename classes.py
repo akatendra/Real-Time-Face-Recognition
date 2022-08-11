@@ -186,9 +186,11 @@ class VideoQueue:
         self.video_queue = deque()
         self.screenshot = screenshot
         self.screenshot_out = None
+        self.stopped_add = False
+        self.stopped_pop = False
         self.stopped = False
 
-    def start(self):
+    def start_add(self):
         Thread(target=self.add, name='VideoQueueAdd', args=(), daemon=True).start()
         # Thread(target=self.pop, name='VideoQueuePop', args=()).start()
         return self
@@ -198,17 +200,23 @@ class VideoQueue:
         return self
 
     def add(self):
-        while not self.stopped:
+        while not self.stopped or not self.stopped_add:
             self.video_queue.append(self.screenshot)
 
 
     def pop(self):
-        while not self.stopped:
+        while not self.stopped or not self.stopped_pop:
             self.screenshot_out = self.video_queue.popleft()
 
 
     def size(self):
         return len(self.video_queue)
+
+    def stop_add(self):
+        self.stopped_add = True
+
+    def stop_pop(self):
+        self.stopped_pop = True
 
     def stop(self):
         self.stopped = True

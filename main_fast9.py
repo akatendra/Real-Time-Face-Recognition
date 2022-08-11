@@ -104,7 +104,7 @@ stack_size = 0
 ##################### Initialize #####################
 
 
-buffering_flag = True
+buffering_flag = True  # If True buffering is going on. False - Buffering is stoped
 face_locations = np.ndarray
 face_names = []
 ##################### Initialize #####################
@@ -113,14 +113,15 @@ face_names = []
 video_getter = VideoGet('Видеоконференция в ZOOM.mp4').start()
 video_shower = VideoShow(video_getter.screenshot)
 cps = CountsPerSec().start()
-stack = VideoQueue(video_getter.screenshot).start()
+stack = VideoQueue(video_getter.screenshot).start_add()
 
 begin_time = time()
 
 while True:
-    if video_getter.stopped or video_shower.stopped:
+    if video_getter.stopped or video_shower.stopped or stack.stopped:
         video_shower.stop()
         video_getter.stop()
+        stack.stop()
         cv.destroyAllWindows()
         print('Video stream canceled!')
         break
@@ -137,31 +138,32 @@ while True:
     # Display the results
 
     #  Buffering
-    if stack_size >= buffer_size:
-        buffering_flag = False
+    if stack_size >= buffer_size and buffering_flag is True:
         stack.start_pop()
         video_shower.start()
-
-    if not buffering_flag:
-        # Display the resulting image
-
-        video_shower.screenshot = stack.screenshot_out
-
-        cps_ = cps.counts_per_sec()
-        print(f'CPS: {cps_}')
-        cps.increment()
-        # debug the loop rate
-        loop_time = time() - begin_time
-        if loop_time == 0:
-            fps_ = 0
-        else:
-            fps_ = 1 / loop_time
-        print(f'FPS: {fps_}')
-        begin_time = time()
-
+        buffering_flag = False
     else:
         print(f'Buffering... ({stack_size})')
         # print('\r', end='')
+
+
+    # Display the resulting image
+
+    video_shower.screenshot = stack.screenshot_out
+
+    cps_ = cps.counts_per_sec()
+    print(f'CPS: {cps_}')
+    cps.increment()
+    # debug the loop rate
+    loop_time = time() - begin_time
+    if loop_time == 0:
+        fps_ = 0
+    else:
+        fps_ = 1 / loop_time
+    print(f'FPS: {fps_}')
+    begin_time = time()
+
+
 
     if frame_count == frame_rate:
         frame_count = 1
@@ -181,6 +183,5 @@ while True:
     for thread in threading.enumerate():
         print(f'Имя потока: {thread.getName()}')
     print(f'Сейчас активен поток: {threading.current_thread()}')
-
 
 print('Done.')
